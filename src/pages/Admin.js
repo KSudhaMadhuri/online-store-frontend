@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import API_BASE_URL from '../config/api';
 
 function Admin() {
@@ -27,7 +26,16 @@ function Admin() {
     setMessage('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/products`, product);
+      const response = await fetch(`${API_BASE_URL}/api/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add product');
+      }
+
       setMessage('Product added successfully!');
       setProduct({
         name: '',
@@ -38,7 +46,7 @@ function Admin() {
         stock: ''
       });
     } catch (error) {
-      setMessage('Error adding product: ' + error.response?.data?.message);
+      setMessage('Error adding product: ' + error.message);
     }
     setLoading(false);
   };
@@ -199,3 +207,4 @@ function Admin() {
 }
 
 export default Admin;
+
